@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css?family=Lato|Inconsolata');
+
+body {
+    font-family: 'Lato', sans-serif;
+    line-height: 1.5;
+}
+
+code {
+    font-family: 'Inconsolata', monospace;
+}
+
+a {
+    color: black !important;
+}
+
+.remark-slide-content {
+    color: #333;
+}
+
+.remark-slide-content h1 {
+    font-size: 3em;
+    line-height: 1.2;
+}
+
+.remark-slide-content h2 {
+    font-size: 2em;
+    line-height: 1.2;
+}
+
+pre {
+    white-space: pre-wrap;
+}
