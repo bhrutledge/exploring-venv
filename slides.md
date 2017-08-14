@@ -3,10 +3,10 @@
 ## with Brian Rutledge
 
 - [What is a virtual environment?](#what)
-- [Creating a virtual environment](#creating)
+- [How do I create one?](#create)
 - [How does it work?](#how)
-- [Where should virtual environments live?](#where)
-- [virtualenvwrapper](#wrapper)
+- [Where do they live?](#where)
+- [Related tools](#related)
 - [Tips](#tips)
 - [Reference](#reference)
 
@@ -24,6 +24,14 @@ TODO
 
 
 ---
+name: default
+layout: true
+
+<!-- TODO: TOC link -->
+
+---
+name: assumptions
+template: default
 
 ## Assumptions
 
@@ -41,6 +49,7 @@ You've used `pip install`
 
 ---
 name: what
+template: default
 
 ## What is a virtual environment?
 
@@ -66,6 +75,7 @@ A filesystem directory containing a `python` executable and user-installed packa
 - `sys.prefix` == "where `python` thinks it's installed"
 
 ---
+template: default
 
 ### What problems does it solve?
 
@@ -76,16 +86,15 @@ Using different versions of Python for different projects
 Keeping system Python clean (especially on shared hosts)
 
 ---
-name: creating
+name: create
+template: default
 
-## Creating a virtual environment
+## How do I create one?
 
 ---
-layout: true
+template: default
 
 ### Before 
-
----
 
 ```
 $ for cmd in python pip; do which $cmd && $cmd --version; done
@@ -119,7 +128,7 @@ TODO
 - `tree` of `sys.prefix`?
 
 ---
-layout: false
+template: default
 
 ### Python 3 makes creation easy
 
@@ -149,11 +158,9 @@ This is a minimal example, *not* a best practice.
 - Note that I used `python`, not `python3`
 
 ---
-layout: true
+template: default
 
 ### After
-
----
 
 ```
 (api_venv) $ for cmd in python pip; do which $cmd && $cmd --version; done
@@ -176,19 +183,22 @@ urllib3 (1.22)
 ```
 
 ---
-layout: false
 name: how
+template: default
 
 ## How does it work?
 
 Let's go back to where it all started...
 
 ---
+name: venv-2
+template: default
 layout: true
 
 ### Virtual environments in Python 2
 
 ---
+template: venv-2
 
 ```
 $ pip2 install virtualenv
@@ -218,6 +228,7 @@ pip 9.0.1 from /usr/local/lib/python2.7/site-packages (python 2.7)
 ```
 
 ---
+template: venv-2
 
 ```
 $ virtualenv api_virtualenv
@@ -242,6 +253,7 @@ Adds `activate` scripts and `python` symbolic links
 - Latest version of `virtualenv` is from 11/16/2016
 
 ---
+template: venv-2
 
 ```
 $ tree -L 4 --dirsfirst -I '*.pyc|*.dist-info' api_virtualenv
@@ -263,6 +275,7 @@ api_virtualenv
 │   └── python2.7 -> /usr/local/Cellar/python/2.7.13_1/...
 ```
 ---
+template: venv-2
 ```
 ├── lib
 │   └── python2.7
@@ -280,6 +293,7 @@ api_virtualenv
 │       │   └── easy_install.py
 ```
 ---
+template: venv-2
 ```
 │       ├── no-global-site-packages.txt
 │       ├── orig-prefix.txt
@@ -307,7 +321,8 @@ TODO
 - What do the the non-`.py` files do?
 
 ---
-layout: false
+name: activate
+template: default
 
 ### What does `activate` do?
 
@@ -332,15 +347,19 @@ Also defines `deactivate`, `$VIRTUAL_ENV`, and modifies `$PS1`
 Use the virtual environment without `activate` via `api_virtualenv/bin/python`
 
 ---
+name: venv-3
+template: default
 layout: true
 
 ### Virtual environments in Python 3
 
 ---
+template: venv-3
 
 Back to the present...
 
 ---
+template: venv-3
 
 Part of the language since Python 3.3
 
@@ -364,6 +383,7 @@ version = 3.6.2
 Python 3.3 released on 9/29/2012
 
 ---
+template: venv-3
 
 ```
 $ tree -L 4 --dirsfirst -I '__pycache__|*.dist-info' api_venv
@@ -406,16 +426,15 @@ api_venv
 - Much shorter, even with installed packages!
 
 ---
-layout: true
-
-## Where should virtual environments live?
-
----
 name: where
+template: default
+
+## Where do they live?
 
 It depends on the project, and your preferences...
 
 ---
+template: where
 
 `~/Code/project/`
 
@@ -427,6 +446,7 @@ It depends on the project, and your preferences...
 - Hard to delete
 
 ---
+template: where
 
 `~/Code/project/venv/`
 
@@ -438,6 +458,7 @@ It depends on the project, and your preferences...
 - Need `venv` in `.gitignore`
 
 ---
+template: where
 
 `~/.virtualenvs/project/`
 
@@ -453,12 +474,34 @@ It depends on the project, and your preferences...
 This is my preference
 
 ---
-layout: true
+name: related
+template: default
 
-## virtualenvwrapper
+## Related tools
+
+- virtualenvwrapper
+- pipsi (e.g. http-prompt), vs. manual
+- Environment variables (e.g., autoenv, direnv)
+- pew
+- pyenv and pyenv-virtualenv
+- pythonz
+- tox
+
+???
+
+TODO
+
+- Bullets and/or slides other tools
 
 ---
 name: wrapper
+template: default
+layout: true
+
+### virtualenvwrapper
+
+---
+template: wrapper
 
 ```
 $ pip2 install virtualenvwrapper
@@ -479,6 +522,7 @@ Creates project directories in `$PROJECT_HOME`
 Adds hook scripts for `activate` and `deactivate` (e.g., for environment variables)
 
 ---
+template: wrapper
 
 ```
 $ mkproject -p python3 api_project
@@ -501,6 +545,7 @@ $ workon api_project
 ```
 
 ---
+template: wrapper
 
 ```
 (api_project) $ tree -L 4 --dirsfirst -I '__pycache__|*.dist-info' $VIRTUAL_ENV
@@ -520,6 +565,7 @@ $ workon api_project
 ```
 
 ---
+template: wrapper
 
 Uses `virtualenv` and its hacks
 
@@ -534,8 +580,8 @@ Better to use `venv` and `virtualenv` directly, and set up your own shortcuts
 See my [`.bash_profile`](https://github.com/bhrutledge/dotfiles/blob/2b9e35ff6efe3d000dbed6f6b50e04599c49f0a5/.bash_profile) and [`.bashrc`](https://github.com/bhrutledge/dotfiles/blob/2b9e35ff6efe3d000dbed6f6b50e04599c49f0a5/.bashrc#L22-L63) for an example
 
 ---
-layout: false
 name: tips
+template: default
 
 ## Tips
 
@@ -565,6 +611,7 @@ Use [`pip install -r requirements.txt`](https://pip.pypa.io/en/stable/user_guide
 
 ---
 name: reference
+template: default
 
 ## Reference
 
@@ -589,19 +636,10 @@ TODO
 - [Virtualenv's `bin/activate` is Doing It Wrong](https://gist.github.com/datagrok/2199506)
 
 ---
+name: dev
+template: default
 
-## Related tools
-
-- pipsi (e.g. http-prompt), vs. manual
-- Environment variables (e.g., autoenv, direnv)
-- pew
-- pyenv and pyenv-virtualenv
-- pythonz
-- tox
-
----
-
-### Using with other tools
+## Using with other dev tools
 
 - IDLE
     - `python3 -m idlelib`
@@ -614,6 +652,8 @@ TODO
 - jedi
 
 ---
+name: alternatives
+template: default
 
 ## Alternatives
 
@@ -634,6 +674,8 @@ TODO
 - Run scripts, apps, etc. in containers using that image
 
 ---
+name: installing
+template: default
 
 ## Installing/upgrading Python 3
 
