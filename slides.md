@@ -40,6 +40,7 @@ You've used `pip install`
 ???
 
 - Before we dive in...
+- Hopefully you'll still find it useful
 - Much of this applies to Python 2
 - I'm not a Windows user, but the references provide instructions
 - Installing Python and pip is non-trivial; we could do a whole talk. See "Installing" slide.
@@ -127,9 +128,9 @@ A minimal example:
 
 ???
 
-- Let's say I want to play with a web API
 - Python 3 makes this easy
 - Not a best practice
+- Let's say I want to play with a web API
 
 --
 
@@ -201,10 +202,24 @@ $
 $ which python3 && python3 --version
 /usr/local/bin/python3
 Python 3.6.2
+```
 
+--
+
+```
 $ python3 -c "import sys; print(sys.prefix)"
 /usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6
+```
 
+???
+
+- `sys.prefix` == "directory where Python thinks it's installed"
+- `sys.prefix` is location of Homebrew installation, which creates symbolic links to executables
+- Otherwise, `sys.prefix` would be `/usr/local`
+
+--
+
+```
 $ pip3 list
 pip (9.0.1)
 setuptools (32.2.0)
@@ -213,9 +228,6 @@ wheel (0.29.0)
 
 ???
 
-- `sys.prefix` == "directory where Python thinks it's installed"
-- `sys.prefix` is location of Homebrew installation, which creates symbolic links to executables
-- Otherwise, `sys.prefix` would be `/usr/local`
 - `pip3` vs `pip`
 
 --
@@ -226,6 +238,10 @@ $ which python && python --version
 Python 2.7.10
 ```
 
+???
+
+- What about just `python`?
+
 ---
 
 ### After `activate`
@@ -234,10 +250,25 @@ Python 2.7.10
 (api_venv)$ which python && python --version
 /Users/brian/Code/api_venv/bin/python
 Python 3.6.2
+```
+???
 
+- Now I'm using `python`, not `python3`
+
+--
+
+```
 (api_venv)$ python -c "import sys; print(sys.prefix)"
 /Users/brian/Code/api_venv
+```
 
+???
+
+- `sys.prefix` is the directory created by `venv`
+
+--
+
+```
 (api_venv)$ pip list
 certifi (2017.7.27.1)
 chardet (3.0.4)
@@ -250,8 +281,6 @@ urllib3 (1.22)
 
 ???
 
-- Now I'm using `python`, not `python3`
-- `sys.prefix` is the directory created by `venv`
 - Clearly different environments for running Python
 
 ---
@@ -259,7 +288,7 @@ name: how
 
 ## How do they work?
 
-Let's go back in time...
+Let's go back in time, and into the weeds...
 
 ---
 layout: true
@@ -303,11 +332,13 @@ Or
 $ virtualenv api_virtualenv
 ```
 
-But it's not clear which version of Python we're using
-
 ???
 
 - Most common instruction
+
+--
+
+But it's not clear which version of Python we're using
 
 ---
 classes: small
@@ -346,12 +377,11 @@ api_virtualenv
 
 - Let's see what's inside
 - Abbreviated output of `tree -L 4 --dirsfirst -I '*.pyc|*.dist-info' api_virtualenv`
+- All this, and I haven't installed any packages!
 - Adds `activate` scripts
 - `python` symbolic link is why `python` command works
-- `include` contains C headers for compiled packages
-- There's `site-packages`
-- All this, and I haven't installed any packages!
-- What does all the stuff in `lib` do?
+- Isolated `site-packages` is what we're after
+- What does all the other stuff in `lib` do?
 
 ---
 
@@ -372,10 +402,10 @@ $ api_virtualenv/bin/python -c "import sys; print(sys.prefix)"
 
 --
 
-Creates hacked copy of [`site.py`](https://docs.python.org/2/library/site.html) to use standard library from `orig-prefix.txt`
+Creates hacked copy of [`site.py`](https://docs.python.org/2/library/site.html) to use standard library from original `sys.prefix`
 
 ```
-$ cat orig-prefix.txt
+$ cat api_virtualenv/lib/python2.7/orig-prefix.txt
 /usr/local/Cellar/python/2.7.13_1/Frameworks/Python.framework/Versions/2.7
 ```
 
@@ -403,14 +433,21 @@ layout: false
 
 ```
 $ source api_virtualenv/bin/activate
+```
 
+???
+
+- `source` allows script to modify current shell session
+
+--
+
+```
 (api_virtualenv)$ echo $VIRTUAL_ENV
 /Users/brian/Code/api_virtualenv
 ```
 
 ???
 
-- `source` allows script to modify current shell session
 - Modifies `$PS1` using directory name
 
 --
@@ -419,7 +456,11 @@ $ source api_virtualenv/bin/activate
 (api_virtualenv)$ which python && python --version
 /Users/brian/Code/api_virtualenv/bin/python
 Python 2.7.13
+```
 
+--
+
+```
 (api_virtualenv)$ echo $PATH
 /Users/brian/Code/api_virtualenv/bin:...:/usr/local/bin:/usr/bin:...
 ```
@@ -430,8 +471,16 @@ Just a shortcut to `python`
 
 ???
 
-- Use the virtualenv without `activate` via `api_virtualenv/bin/python`
 - Also defines `deactivate` 
+
+--
+
+Use the virtualenv without `activate` via `api_virtualenv/bin/python`
+
+???
+
+TODO
+
 - [Virtualenv's `bin/activate` is Doing It Wrong](https://gist.github.com/datagrok/2199506)
     - Shell-specific scripts
     - Brittle `$PS1` modification
@@ -482,6 +531,12 @@ api_venv
 
 Part of the language since Python 3.3
 
+???
+
+- Python 3.3 released on 9/29/2012
+
+--
+
 No need for hacked `site.py` and standard library symbolic links
 
 Adds `pyvenv.cfg` to tell Python that this is a venv
@@ -493,13 +548,11 @@ include-system-site-packages = false
 version = 3.6.2
 ```
 
-???
-
-- Python 3.3 released on 9/29/2012
-
 --
 
 `activate` does pretty much the same thing
+
+--
 
 `pyvenv` command deprecated in favor of `python3 -m venv`
 
@@ -549,8 +602,9 @@ Not recommended
 ### `~/Code/project/venv/`
 
 ```
+$ mkdir project
 $ cd project
-$ python3 -m venv project venv
+$ python3 -m venv venv
 $ source venv/bin/activate
 (venv)$ vim project.py
 ```
@@ -570,9 +624,10 @@ Use `--prompt` option for `(project)$`
 ### `~/.venvs/project/`
 
 ```
-$ cd project
 $ python3 -m venv ~/.venvs/project
 $ source ~/.venvs/project/bin/activate
+(project)$ mkdir project
+(project)$ cd project
 (project)$ vim project.py
 ```
 
@@ -597,8 +652,10 @@ name: related
 
 ???
 
-TODO
+- Make venv eaiser to work with
+- Reduce typing, establish conventions
 
+TODO
 - TOC w/ links
 - https://virtualenvwrapper.readthedocs.io/
 - https://github.com/berdario/pew
@@ -615,83 +672,74 @@ layout: true
 
 ```
 $ pip2 install virtualenvwrapper
-$ cat >> ~/.bash_profile 
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/Code
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python2
-source /usr/local/bin/virtualenvwrapper.sh
-^D
+# Then add some stuff to ~/.bash_profile, and start a new shell
 ```
 
-Adds shell commands for adding and activating virtualenvs by name
-
-Creates virtualenvs in `$WORKON_HOME`
-
-Creates project directories in `$PROJECT_HOME`
-
-Adds hook scripts for `activate` and `deactivate` (e.g., for environment variables)
-
----
+--
 
 ```
 $ mkproject -p python3 api_project
-# ...
-New python executable in /Users/brian/.virtualenvs/api_project/bin/python3.6
-# ...
-Setting project for api_project to /Users/brian/Code/api_project
+```
 
-(api_project)$ echo $VIRTUAL_ENV
+--
+
+```
+(api_project)$ pwd && echo $VIRTUAL_ENV
+/Users/brian/Code/api_project
 /Users/brian/.virtualenvs/api_project
+```
 
+--
+
+```
 (api_project)$ deactivate
+```
 
-$ cd /path/to/some/other/place
+--
 
+```
+$ cd ~
+```
+
+--
+
+```
 $ workon api_project
+```
 
+--
+
+```
 (api_project)$ pwd
 /Users/brian/Code/api_project
 ```
 
 ---
 
-.small[
-```
-/Users/brian/.virtualenvs/api_project
-├── bin
-│   ├── activate
-│   ├── postactivate
-│   ├── postdeactivate
-│   ├── preactivate
-│   ├── predeactivate
-│   ├── python -> python3.6
-│   ├── python3.6
-│   # more executables and activate scripts
-├── include
-│   └── python3.6m -> /usr/local/Cellar/python3/3.6.2/...
-├── lib
-│   └── python3.6
-│       # same stuff as Python 2 virtualenv
-```
-]
+Adds shell commands for adding and activating virtualenvs by name
+
+Creates virtualenvs and project directories in separate, consistent locations
+
+Adds pre- and post- hooks for `activate` and `deactivate`
 
 ???
 
-- `tree -L 4 --dirsfirst -I '__pycache__|*.dist-info' $VIRTUAL_ENV`
-
----
-
-Uses `virtualenv` and its hacks
-
-Slows down shell startup (but has a lazy-loading option)
-
-Some attempts at a `venv`-based alternative, but nothing as prevelant
+- Set/unset environment variables
 
 --
 
-*IMHO*
+Adds hacks on top of `virtualenv` and its hacks
 
-Better to use `venv` and `virtualenv` directly, and set up your own shortcuts
+Slows down shell startup
+
+???
+
+- Has a lazy-loading option
+- Some attempts at a `venv`-based alternative, but nothing as prevelant
+
+--
+
+IMHO, better to use `venv` / `virtualenv` directly, and set up your own shortcuts
 
 See my [`.bash_profile`](https://github.com/bhrutledge/dotfiles/blob/2b9e35ff6efe3d000dbed6f6b50e04599c49f0a5/.bash_profile)
 and [`.bashrc`](https://github.com/bhrutledge/dotfiles/blob/2b9e35ff6efe3d000dbed6f6b50e04599c49f0a5/.bashrc#L22-L63)
@@ -708,7 +756,6 @@ Treat venvs as ephemeral
 - Don't manually edit files in the venv
 - Don't try to relocate venvs; recreate them instead
 - Upgrade Python using a new venv
-- Delete venvs with `rm -rf`
 
 Prefer `venv` over `virtualenv` for Python 3
 
