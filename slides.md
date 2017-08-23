@@ -18,12 +18,12 @@
 
 TODO
 
+- Run commands on Ubuntu?
 - Better typography
     - https://fonts.google.com/?category=Monospace
     - Quotes
 - https://github.com/gnab/remark/wiki/Configuration#highlighting
 - Personal links
-- Run commands on Ubuntu?
 
 ---
 name: assumptions
@@ -713,24 +713,23 @@ name: related
 
 - Make venv easier to work with
 - Reduce typing, establish conventions
+- Leverage isolation
 
 TODO
-- TOC w/ links
-- https://virtualenvwrapper.readthedocs.io/
-- https://github.com/berdario/pew
-- https://github.com/mitsuhiko/pipsi (vs. manual script install)
-- https://tox.readthedocs.io/en/latest/
-- https://github.com/pyenv/pyenv-virtualenv
+
+[pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv)
+
+[tox](https://tox.readthedocs.io/en/latest/)
 
 ---
 layout: true
 
-### virtualenvwrapper
+### [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/)
 
 ---
 
 ```
-$ pip2 install virtualenvwrapper
+$ python -m pip install --user virtualenvwrapper
 # Then add some stuff to ~/.bash_profile, and start a new shell
 ```
 
@@ -738,6 +737,10 @@ $ pip2 install virtualenvwrapper
 
 ```
 $ mkproject -p python3 api_project
+Running virtualenv with interpreter /usr/local/bin/python3
+New python executable in /Users/brian/.virtualenvs/api_project/bin/python3.6
+# ... virtualenv output ...
+Setting project for api_project to /Users/brian/Code/api_project
 ```
 
 ???
@@ -747,9 +750,8 @@ $ mkproject -p python3 api_project
 --
 
 ```
-(api_project)$ pwd && echo $VIRTUAL_ENV
+(api_project)$ pwd
 /Users/brian/Code/api_project
-/Users/brian/.virtualenvs/api_project
 ```
 
 ???
@@ -758,15 +760,7 @@ $ mkproject -p python3 api_project
 
 --
 
-```
-(api_project)$ deactivate
-```
-
---
-
-```
-$ cd ~
-```
+We `deactivate`, time passes...
 
 --
 
@@ -785,12 +779,13 @@ $ workon api_project
 
 Convenient access to virtualenvs by name
 
-Keeps virtualenvs and project directories in consistent, isolated locations
+Keeps virtualenvs and project directories isolated and organized
 
 Adds pre- and post- hooks for `activate` and `deactivate`
 
 ???
 
+- Including tab completion
 - Set/unset environment variables
 
 --
@@ -817,16 +812,78 @@ for an example
 - I used virtualenvwrapper for a long time, got frustrated by its magic
 
 ---
-name: tips
 layout: false
 
-## Tips
+
+### [pew](https://github.com/berdario/pew)
+
+A better `virtualenvwrapper`
+
+```
+$ pew mkproject -p python3 api_pew
+Running virtualenv with interpreter /usr/local/bin/python3
+New python executable in /Users/brian/.virtualenvs/api_pew/bin/python3.6
+# ... virtualenv output ...
+Setting project for api_pew to /Users/brian/Code/api_pew
+Launching subshell in virtual environment. Type 'exit' or 'Ctrl+D' to return.
+
+(api_pew)$ exit
+
+$ pew workon api_pew
+
+(api_pew)$ 
+```
+???
+
+- Behaves similarly to `virtualenvwraper`
+
+TODO
+
+- Subshell
+- Uses `virtualenv`
+
+---
+
+### [pipsi](https://github.com/mitsuhiko/pipsi)
+
+Install command line tools into separate virtualenvs
+
+```
+$ pipsi install --python python3 http-prompt
+
+$ which http-prompt
+/Users/brian/.local/bin/http-prompt
+
+$ /Users/brian/.local/venvs/http-prompt/bin/python -m pip list
+http-prompt (0.10.2)
+httpie (0.9.9)
+prompt-toolkit (1.0.15)
+requests (2.18.4)
+# ...
+
+$ http-prompt
+Version: 0.10.2
+http://localhost:8000>
+```
 
 ???
 
-- From my experience...
+TODO
 
---
+- `venv`?
+- Shortcut for manual venv and symlink into `~/bin`
+
+---
+layout: true
+
+## Tips
+
+---
+name: tips
+
+From my experience...
+
+---
 
 Delete with `rm -rf`
 
@@ -878,25 +935,26 @@ $ python2.7 -m virtualenv
 
 ---
 name: reference
+layout: false
 
 ## Reference
 
 - [Python Virtual Environments - a primer](https://realpython.com/blog/python/python-virtual-environments-a-primer/#disqus_thread)
 - [Don't Make Us Say We Told You So: virtualenv for New Pythonistas](https://www.youtube.com/watch?v=Xdv7vwIIThY)
-- [Reverse-engineering Ian Bicking's brain: inside pip and virtualenv](http://pyvideo.org/pycon-us-2011/pycon-2011--reverse-engineering-ian-bicking--39-s.html)
-    - [Slides](https://carljm.github.io/pipvirtualenv-preso/)
-    - Watch to the end to see the genesis of `venv` in Python 3
+- [Reverse-engineering Ian Bicking's brain: inside pip and virtualenv](http://pyvideo.org/pycon-us-2011/pycon-2011--reverse-engineering-ian-bicking--39-s.html) ([Slides](https://carljm.github.io/pipvirtualenv-preso/))
 - [venv documentation](https://docs.python.org/3/library/venv.html)
 - [PEP 405 -- Python Virtual Environments](https://www.python.org/dev/peps/pep-0405/)
 - [virtualenv documentation](https://virtualenv.pypa.io/en/stable/)
+- [Installing Python Modules](https://docs.python.org/3/installing/index.html)
 
 ???
 
+- Watch to the end of video to see the genesis of `venv` in Python 3
+
 TODO
 
-- https://glyph.twistedmatrix.com/2016/08/python-packaging.html
+- Move package doc links to slide headers
 - https://github.com/python/cpython/tree/master/Lib/venv
-- [Installing Python Modules](https://docs.python.org/3/installing/index.html)
 - https://groups.google.com/forum/#!forum/python-virtualenv
 - Evolution of `virtualenv` to `venv`
 - GitHub issues

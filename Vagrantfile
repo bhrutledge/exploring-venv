@@ -67,7 +67,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
     apt-get install -y \
-        python-pip virtualenv virtualenvwrapper \
+        python-pip \
         python3-pip python3-venv \
         python3.6-venv \
         tree
