@@ -216,24 +216,6 @@ $
 ### Before `activate` 
 
 ```
-$ which python && python --version
-/usr/bin/python
-Python 2.7.10
-```
-
-???
-
-- Ask Python where it lives, and what version it is
-- This is the version that comes with macOS
-- But I want Python 3
-
-TODO
-
-- Move this to Python 2
-
---
-
-```
 $ which python3 && python3 --version
 /usr/local/bin/python3
 Python 3.6.2
@@ -241,12 +223,13 @@ Python 3.6.2
 
 ???
 
+- Ask Python where it lives, and what version it is
 - I installed this with Homebrew
 
 --
 
 ```
-$ pip3 list
+$ python3 -m pip list
 pip (9.0.1)
 setuptools (32.2.0)
 wheel (0.29.0)
@@ -254,7 +237,7 @@ wheel (0.29.0)
 
 ???
 
-- Using `pip3` to install Python 3 packages
+- Using `pip` with a known version of Python
 
 ---
 
@@ -269,6 +252,7 @@ Python 3.6.2
 ???
 
 - `venv` lets us use `python` instead of `python3`
+- Same version, but now it lives in our venv directory
 
 --
 
@@ -285,7 +269,9 @@ urllib3 (1.22)
 
 ???
 
+- `requests` and its dependencies
 - Clearly different environments for running Python
+- It's safe to use `pip` inside a venv
 
 ---
 name: how
@@ -302,37 +288,62 @@ layout: true
 ---
 
 ```
-$ pip2 install virtualenv
+$ which python && python --version
+/usr/bin/python
+Python 2.7.10
+```
+
+???
+
+- This is the version that comes with macOS
+
+--
+
+```
+$ python -m pip list
+altgraph (0.10.2)
+bdist-mpkg (0.5.0)
+bonjour-py (0.3)
+macholib (1.5.1)
+matplotlib (1.3.1)
+modulegraph (0.10.4)
+numpy (1.8.0rc1)
+pip (9.0.1)
+py2app (0.7.3)
+pyobjc-core (2.5.1)
+pyobjc-framework-Accounts (2.5.1)
+pyobjc-framework-AddressBook (2.5.1)
+# many more...
+```
+
+???
+
+- So many packages that we don't need or want
+
+---
+
+```
+$ python -m pip install --user virtualenv
 ```
 
 ???
 
 - venvs are not part of the language
 - First version of `virtualenv` on PyPI on 9/14/2007
-- Using `pip2` to guarantee Python 2
-- Latest version of Python 2 installed via Homebrew, includes pip
-- On Ubuntu, use `apt install virtualenv`
-
-???
-
-TODO
-
-- Use `python -m pip install --user virtualenv`
-- `python -m pip list`
+- Safest cross-platform command
 
 --
 
 ```
-$ python2 -m virtualenv api_virtualenv
-New python executable in /Users/brian/Code/api_virtualenv/bin/python2.7
-Also creating executable in /Users/brian/Code/api_virtualenv/bin/python
+$ python -m virtualenv api_virtualenv
+New python executable in /Users/brian/Code/api_virtualenv/bin/python
 Installing setuptools, pip, wheel...done.
 ```
 
 ???
 
 - Similar to `python3 -m venv`, create a new virtualenv
-- Unllike `venv`, output is informative
+- Unlike `venv`, output gives us a hint about what's going on
 
 --
 
@@ -353,7 +364,7 @@ But it's not clear which version of Python we're using
 ???
 
 - Specifying a different version requires a command line argument
-- For the sake of clarity and consistency
+- For clarity and consistency, use `python -m virtualenv`
 
 ---
 classes: small
@@ -364,12 +375,12 @@ api_virtualenv
 ├── bin
 │   ├── activate
 │   ├── pip
-│   ├── pip2.7
-│   ├── python -> python2.7
-│   ├── python2.7
+│   ├── pip2
+│   ├── python
+│   ├── python2 -> python
 │   # more executables and activate scripts
 ├── include
-│   └── python2.7 -> /usr/local/Cellar/python/2.7.13_1/...
+│   └── python2.7 -> /System/Library/Frameworks/Python.framework/Versions/2.7/...
 ├── lib
 │   └── python2.7
 │       ├── distutils
@@ -381,9 +392,9 @@ api_virtualenv
 │       ├── no-global-site-packages.txt
 │       ├── orig-prefix.txt
 │       ├── site.py
-│       ├── os.py -> /usr/local/Cellar/python/2.7.13_1/...
-│       ├── posixpath.py -> /usr/local/Cellar/python/2.7.13_1/...
-│       ├── re.py -> /usr/local/Cellar/python/2.7.13_1/...
+│       ├── os.py -> /System/Library/Frameworks/Python.framework/Versions/2.7/...
+│       ├── posixpath.py -> /System/Library/Frameworks/Python.framework/Versions/2.7/...
+│       ├── re.py -> /System/Library/Frameworks/Python.framework/Versions/2.7/...
 │       # many more symbolic links
 ```
 ]
@@ -394,8 +405,8 @@ api_virtualenv
 - Abbreviated output of `tree -L 4 --dirsfirst -I '*.pyc|*.dist-info' api_virtualenv`
 - All this, and I haven't installed any packages!
 - Isolated `site-packages` is what we want; that's where pip installs packages
+- None of the system packages
 - Adds `activate` scripts
-- Handy `python` symbolic link
 - What does all the other stuff in `lib` do?
 
 ---
@@ -405,35 +416,44 @@ Tells Python to behave like it's installed in the virtualenv directory
 --
 
 ```
-$ /usr/local/bin/python2 -c "import sys; print(sys.prefix)"
-/usr/local/Cellar/python/2.7.13_1/Frameworks/Python.framework/Versions/2.7
+$ python -c "import sys; print(sys.prefix)"
+/System/Library/Frameworks/Python.framework/Versions/2.7
 ```
 
 ???
 
 - Where does system Python think it's installed?
 - Determined by moving up from location of executable and looking for specific files
-- Homebrew install creates symbolic links to executables
 - https://carljm.github.io/pipvirtualenv-preso/#10
 
 --
 
 ```
 $ api_virtualenv/bin/python -c "import sys; print(sys.prefix)"
-/Users/brian/Code/api_virtualenv/bin/..
+/Users/brian/Code/api_virtualenv
+```
+
+--
+
+```
+$ api_virtualenv/bin/python -m pip list
+pip (9.0.1)
+setuptools (36.2.7)
+wheel (0.29.0)
 ```
 
 ???
 
+- Sure enough, we're not using the system `site-packages`
 - But now we don't have a standard library; batteries not included!
 
---
+---
 
 Creates hacked copy of [`site.py`](https://docs.python.org/2/library/site.html) to use standard library from original [`sys.prefix`](https://docs.python.org/2/library/sys.html#sys.prefix)
 
 ```
 $ cat api_virtualenv/lib/python2.7/orig-prefix.txt
-/usr/local/Cellar/python/2.7.13_1/Frameworks/Python.framework/Versions/2.7
+/System/Library/Frameworks/Python.framework/Versions/2.7
 ```
 
 ???
@@ -462,7 +482,6 @@ Python upgrades or OS could cause problems by changing `site.py`
 - `virtualenv` has to play catch-up
 - Last release of `virtualenv` on 11/16/2016, 3.6 released 12/23/2016
 
-
 ---
 layout: true
 
@@ -476,7 +495,7 @@ api_venv
 ├── bin
 │   ├── activate
 │   ├── pip
-│   ├── pip3.6
+│   ├── pip3
 │   ├── python -> python3
 │   ├── python3 -> /usr/local/bin/python3
 │   # more executables and activate scripts
@@ -502,6 +521,7 @@ api_venv
 - `tree -L 4 --dirsfirst -I '__pycache__|*.dist-info' api_venv`
 - Much shorter, even with installed packages!
 - Still have `site-packages`, `activate`, etc., but no symbolic links
+- Handy `python` symbolic link
 
 ---
 
@@ -699,8 +719,8 @@ TODO
 - https://virtualenvwrapper.readthedocs.io/
 - https://github.com/berdario/pew
 - https://github.com/mitsuhiko/pipsi (vs. manual script install)
-- https://github.com/pyenv/pyenv-virtualenv
 - https://tox.readthedocs.io/en/latest/
+- https://github.com/pyenv/pyenv-virtualenv
 
 ---
 layout: true
