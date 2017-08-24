@@ -6,24 +6,27 @@
 - [How do I create one?](#create)
 - [How do they work?](#how)
 - [Where do they live?](#where)
-- [Related tools](#related)
 - [Tips](#tips)
+- [Related tools](#related)
 - [Reference](#reference)
 
 ???
 
+Hi there! First, a bit about me. I'm a developer at EnergySage.
+We're a startup in downtown Boston, and use Django to power the world's first and largest online marketplace for solar panel installation.
+Fun fact: I found about the job through the mailing list for this meetup.
+Also, we're likely going to be hiring in the fall, so come say hi if you might be interested.
+ 
 - Take your time
+- Look ahead
 - Breathe
-- "Hi there!"
 
 TODO
 
 - s/Python version/Python interpreter/
 - Run commands on Ubuntu?
 - Better typography
-    - https://fonts.google.com/?category=Monospace
     - Quotes
-- https://github.com/gnab/remark/wiki/Configuration#highlighting
 - Personal links
 
 ---
@@ -67,6 +70,7 @@ A place to install and use packages independently from other Python environments
 
 - More concretely
 - Let's define a couple of those terms
+- An isolated copy of Python?
 
 --
 
@@ -148,8 +152,9 @@ $ python3 -m venv api_venv
 
 ???
 
-- Run the `venv` module as a script, asking it to create a virtualenv
-- Creates a directory; we'll see the contents of the directory later
+- `$` indicates a new command line; the command starts after it
+- Ask Python 3 to run the `venv` module to create a virtualenv
+- Creates a directory; we'll take a look inside of that later
 
 --
 
@@ -204,9 +209,9 @@ $
 
 - Now I'm outside the venv
 
----
+--
 
-### What just happened?
+What just happened?
 
 ???
 
@@ -224,7 +229,7 @@ Python 3.6.2
 
 ???
 
-- Ask Python where it lives, and what version it is
+- Ask Python 3 where it lives, and what version it is
 - I installed this with Homebrew
 
 --
@@ -238,6 +243,7 @@ wheel (0.29.0)
 
 ???
 
+- Ask Python what packages are installed
 - Using `pip` with a known version of Python
 
 ---
@@ -252,8 +258,8 @@ Python 3.6.2
 
 ???
 
-- `venv` lets us use `python` instead of `python3`
 - Same version, but now it lives in our venv directory
+- `venv` lets us use `python` instead of `python3`
 
 --
 
@@ -296,6 +302,7 @@ Python 2.7.10
 
 ???
 
+- First, let's look at system Python
 - This is the version that comes with macOS
 
 --
@@ -331,7 +338,7 @@ $ python -m pip install --user virtualenv
 
 - venvs are not part of the language
 - First version of `virtualenv` on PyPI on 9/14/2007
-- Safest cross-platform command
+- More complicated than `pip install`, but it's the safest cross-platform command
 
 --
 
@@ -374,10 +381,10 @@ classes: small
 ```
 api_virtualenv
 ├── bin
-│   ├── activate
+*│   ├── activate
 │   ├── pip
 │   ├── pip2
-│   ├── python
+*│   ├── python
 │   ├── python2 -> python
 │   # more executables and activate scripts
 ├── include
@@ -385,7 +392,7 @@ api_virtualenv
 ├── lib
 │   └── python2.7
 │       ├── distutils
-│       ├── site-packages
+*│       ├── site-packages
 │       │   ├── pip
 │       │   ├── setuptools
 │       │   ├── wheel
@@ -423,7 +430,7 @@ $ python -c "import sys; print(sys.prefix)"
 
 ???
 
-- Where does system Python think it's installed?
+- `sys.prefix` == "Where does system Python think it's installed?"
 - Determined by moving up from location of executable and looking for specific files
 - https://carljm.github.io/pipvirtualenv-preso/#10
 
@@ -471,6 +478,7 @@ Creates symbolic links to standard library modules imported by `site.py`
 ???
 
 - I know we're in the weeds, but I think this is really interesting
+- You don't need to understand this in order to use virtualenv
 - A crucial part of developing Python is a big, clever hack
 - Hacks are brittle
 
@@ -494,16 +502,16 @@ layout: true
 ```
 api_venv
 ├── bin
-│   ├── activate
+*│   ├── activate
 │   ├── pip
 │   ├── pip3
-│   ├── python -> python3
+*│   ├── python -> python3
 │   ├── python3 -> /usr/local/bin/python3
 │   # more executables and activate scripts
 ├── include
 ├── lib
 │   └── python3.6
-│       └── site-packages
+*│       └── site-packages
 │           ├── certifi
 │           ├── chardet
 │           ├── idna
@@ -541,17 +549,12 @@ Adds `pyvenv.cfg` to tell Python that this is a venv
 ```
 $ cat api_venv/pyvenv.cfg
 home = /usr/local/bin
-include-system-site-packages = false
-version = 3.6.2
+# ...
 ```
 
 ???
 
 - And where to find the standard library
-
---
-
-`pyvenv` command deprecated; use `python3 -m venv`
 
 ---
 layout: false
@@ -570,26 +573,17 @@ $ source api_venv/bin/activate
 --
 
 ```
-(api_venv)$ echo $VIRTUAL_ENV
-/Users/brian/Code/api_venv
+(api_venv)$ env | grep -e VIRTUAL_ENV -e PATH
+VIRTUAL_ENV=/Users/brian/Code/api_venv
+PATH=/Users/brian/Code/api_venv/bin:/Users/brian/.local/bin:/usr/local/bin:/usr/bin:...
 ```
 
 ???
 
 - Modifies `$PS1` using directory name
 - `$VIRTUAL_ENV` is root of venv
-
---
-
-```
-(api_venv)$ echo $PATH
-/Users/brian/Code/api_venv/bin:/Users/brian/bin:/usr/local/bin:/usr/bin:...
-```
-
-???
-
 - Modifies `$PATH`
-- Before `activate` and after `deactivate` wouldn't have `api_venv/bin`
+- Before `activate` wouldn't have `api_venv/bin`
 
 --
 
@@ -604,26 +598,23 @@ Just a shortcut to `python`
 
 --
 
-```
-(api_venv)$ deactivate
-
-$ echo $PATH
-/Users/brian/bin:/usr/local/bin:/usr/bin:...
-```
+Use the virtualenv without `activate` via `api_venv/bin/python`
 
 --
 
-Use the virtualenv without `activate` via `api_venv/bin/python`
+```
+(api_venv)$ deactivate
+
+$ env | grep -e VIRTUAL_ENV -e PATH
+PATH=/Users/brian/.local/bin:/usr/local/bin:/usr/bin:...
+```
 
 ???
 
+- Cleans up
 - Pretty much the same in Python 2 and 3
 
 TODO
-
-```
-$ env | grep -e VIRTUAL_ENV -e PATH
-```
 
 [Virtualenv's `bin/activate` is Doing It Wrong](https://gist.github.com/datagrok/2199506)
 
@@ -635,7 +626,6 @@ $ env | grep -e VIRTUAL_ENV -e PATH
 
 ---
 name: where
-layout: false
 
 ## Where do they live?
 
@@ -714,7 +704,68 @@ Use `--prompt` option for `(project)$`
 - Don't put venv in source control
 
 ---
+layout: true
+
+## Tips
+
+---
+name: tips
+
+From my experience...
+
+---
+
+Delete with `rm -rf`
+
+Avoid editing files in the venv
+
+Recreate instead of moving or upgrading
+
+???
+
+- Don't take them too seriously
+- Not in version control, so edits need to be copied to other development machines
+- Not relocatable
+
+--
+
+Use [`pip install -r requirements.txt`](https://pip.pypa.io/en/stable/user_guide/#requirements-files), and check out [pip-tools](https://github.com/jazzband/pip-tools)
+
+Check out [autoenv](https://github.com/kennethreitz/autoenv) and [direnv](https://direnv.net) for managing shell environment
+
+???
+
+- Makes it easy to recreate virtualenvs
+- Auto-activate venv, set/unset environment variables
+
+--
+
+Think twice before using `pip` outside of a venv
+
+--
+
+Prefer `venv` over `virtualenv` for Python 3
+
+--
+
+Don't need venv for scripts that only use standard library
+
+Start scripts with `#!/usr/bin/env python3`
+
+???
+
+TODO
+
+Outside of a venv, be explicit about which Python you're using:
+
+```
+$ python3.6 -m pip install --user
+$ python2.7 -m virtualenv
+```
+
+---
 name: related
+layout: false
 
 ## Related tools
 
@@ -745,22 +796,15 @@ Running virtualenv with interpreter /usr/local/bin/python3
 New python executable in /Users/brian/.virtualenvs/api_project/bin/python3.6
 # ... virtualenv output ...
 Setting project for api_project to /Users/brian/Code/api_project
-```
 
-???
-
-- Shell commands replace `python3 -m venv`
-
---
-
-```
 (api_project)$ pwd
 /Users/brian/Code/api_project
 ```
 
 ???
 
-- Created venv, project directory, and `cd`'d into project for us
+- Shell commands replace `python3 -m venv`
+- Created venv, project directory, activated, and `cd`'d into project
 
 --
 
@@ -770,14 +814,14 @@ We `deactivate`, time passes...
 
 ```
 $ workon api_project
-```
 
---
-
-```
 (api_project)$ pwd
 /Users/brian/Code/api_project
 ```
+
+???
+
+- Now we're back in the virtualenv and our project directory
 
 ---
 
@@ -816,7 +860,6 @@ for an example
 ---
 layout: false
 
-
 ### [pew](https://github.com/berdario/pew)
 
 A better `virtualenvwrapper`
@@ -835,7 +878,7 @@ Launching subshell in virtual environment. Type 'exit' or 'Ctrl+D' to return.
 ???
 
 - Behaves similarly to `virtualenvwrapoper`
-- Avoids need for shell-specific hacks
+- New shell session avoids need for shell-specific hacks
 - Only need to update environment
 
 --
@@ -857,7 +900,7 @@ $ pew workon api_pew
 ```
 ???
 
-- Pure Python
+- Pure Python, install with `pip`
 - Still uses `virtualenv`, but there's an open issue about using `venv`
 
 ---
@@ -869,35 +912,33 @@ Install command line tools into separate virtualenvs
 --
 
 ```
-$ pipsi install --python python3 cookiecutter
-New python executable in /Users/brian/.local/venvs/cookiecutter/bin/python3.6
-  Linked script /Users/brian/.local/bin/cookiecutter
+$ pipsi install --python python3 pew
+New python executable in /Users/brian/.local/venvs/pew/bin/python3.6
+  Linked script /Users/brian/.local/bin/pew
 # ...
 ```
 
 ???
 
-- Cookiecutter creates projects from templates
+- Use instead of `pip install`
 
 --
 
 ```
-$ /Users/brian/.local/venvs/cookiecutter/bin/python -m pip list
-arrow (0.10.0)
-click (6.7)
-cookiecutter (1.5.1)
-Jinja2 (2.9.6)
+$ /Users/brian/.local/venvs/pew/bin/python -m pip list
+pew (0.1.26)
+pip (9.0.1)
+requests (2.18.4)
+virtualenv (15.1.0)
 # ...
 ```
 
 --
 
 ```
-$ cookiecutter
-Usage: cookiecutter [OPTIONS] TEMPLATE [EXTRA_CONTEXT]...
+$ pew version
+0.1.26
 ```
-
-Check out [cookiecutter](https://github.com/audreyr/cookiecutter)
 
 ???
 
@@ -917,11 +958,12 @@ Check out [cookiecutter](https://github.com/audreyr/cookiecutter)
 
 [Pipenv](http://docs.pipenv.org/en/latest/): "Sacred Marriage of Pipfile, Pip, & Virtualenv"
 
-- "[`Pipfile` will be superior to `requirements.txt`](https://github.com/pypa/pipfile)"
+- "[`Pipfile`](https://github.com/pypa/pipfile) will be superior to `requirements.txt`"
 - Relies on [pew](https://github.com/berdario/pew)
 
 ???
 
+- One command to manage venvs and packages
 - Bleeding edge
 
 --
@@ -939,78 +981,19 @@ Check out [cookiecutter](https://github.com/audreyr/cookiecutter)
 
 [tox](https://tox.readthedocs.io/en/latest/): "Automate and standardize testing in Python"
 
-- Creates a virtualenv for multiple versions of Python
+- Creates a virtualenv for combinations of Python and package versions
 - Installs and tests your project in each
 
----
-layout: true
-
-## Tips
-
----
-name: tips
-
-From my experience...
-
----
-
-Delete with `rm -rf`
-
-Avoid editing files in the venv
-
-Recreate instead of moving or upgrading
-
 ???
 
-- Don't take them too seriously
-- Not in version control, so edits need to be copied to other development machines
-- Not relocatable
-- `virtualenvwrapper` encourages editing venv scripts
-
---
-
-Use [`pip install -r requirements.txt`](https://pip.pypa.io/en/stable/user_guide/#requirements-files), and check out [pip-tools](https://github.com/jazzband/pip-tools)
-
-???
-
-- Makes it easy to recreate virtualenvs
-
---
-
-Check out [autoenv](https://github.com/kennethreitz/autoenv) and [direnv](https://direnv.net) for managing shell environment
-
-???
-
-- Auto-activate venv, set/unset environment variables
-
---
-
-Prefer `venv` over `virtualenv` for Python 3
-
-???
-
-TODO
-
-Don't need venv for scripts that only use standard library
-
-Start scripts `#!/usr/bin/env python3`
-
-Think twice before using `pip` outside of a venv
-
-Outside of a venv, be explicit about which Python you're using:
-
-```
-$ python3.6 -m pip install --user
-$ python2.7 -m virtualenv
-```
+- For example, a project that supports Django 1.8+, Python 2.7-3.6
 
 ---
 name: reference
-layout: false
 
 ## Reference
 
-- [Python Virtual Environments - a primer](https://realpython.com/blog/python/python-virtual-environments-a-primer/#disqus_thread)
+- [Python Virtual Environments - a primer](https://realpython.com/blog/python/python-virtual-environments-a-primer/)
 - [Don't Make Us Say We Told You So: virtualenv for New Pythonistas](https://www.youtube.com/watch?v=Xdv7vwIIThY)
 - [Reverse-engineering Ian Bicking's brain: inside pip and virtualenv](http://pyvideo.org/pycon-us-2011/pycon-2011--reverse-engineering-ian-bicking--39-s.html) ([Slides](https://carljm.github.io/pipvirtualenv-preso/))
 - [venv documentation](https://docs.python.org/3/library/venv.html)
