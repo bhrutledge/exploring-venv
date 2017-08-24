@@ -18,6 +18,7 @@
 
 TODO
 
+- s/Python version/Python interpreter/
 - Run commands on Ubuntu?
 - Better typography
     - https://fonts.google.com/?category=Monospace
@@ -581,14 +582,6 @@ $ source api_venv/bin/activate
 --
 
 ```
-(api_venv)$ which python && python --version
-/Users/brian/Code/api_venv/bin/python
-Python 3.6.2
-```
-
---
-
-```
 (api_venv)$ echo $PATH
 /Users/brian/Code/api_venv/bin:/Users/brian/bin:/usr/local/bin:/usr/bin:...
 ```
@@ -600,11 +593,23 @@ Python 3.6.2
 
 --
 
+```
+(api_venv)$ which python
+/Users/brian/Code/api_venv/bin/python
+```
+
+--
+
 Just a shortcut to `python`
 
-???
+--
 
-- Also defines `deactivate`
+```
+(api_venv)$ deactivate
+
+$ echo $PATH
+/Users/brian/bin:/usr/local/bin:/usr/bin:...
+```
 
 --
 
@@ -616,12 +621,16 @@ Use the virtualenv without `activate` via `api_venv/bin/python`
 
 TODO
 
-- Show `$PATH` before and after
-- [Virtualenv's `bin/activate` is Doing It Wrong](https://gist.github.com/datagrok/2199506)
-    - Shell-specific scripts
-    - Brittle `$PS1` modification
-    - Doesn't solve setting/unsetting environment variables
-    - Sub-shell is better
+```
+$ env | grep -e VIRTUAL_ENV -e PATH
+```
+
+[Virtualenv's `bin/activate` is Doing It Wrong](https://gist.github.com/datagrok/2199506)
+
+- Shell-specific scripts
+- Brittle `$PS1` modification
+- Doesn't solve setting/unsetting environment variables
+- Sub-shell is better
 
 
 ---
@@ -715,12 +724,6 @@ name: related
 - Reduce typing, establish conventions
 - Leverage isolation
 
-TODO
-
-[pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv)
-
-[tox](https://tox.readthedocs.io/en/latest/)
-
 ---
 layout: true
 
@@ -728,10 +731,11 @@ layout: true
 
 ---
 
-```
-$ python -m pip install --user virtualenvwrapper
-# Then add some stuff to ~/.bash_profile, and start a new shell
-```
+Keeps virtualenvs and project directories isolated and organized
+
+???
+
+- Installation is more than just `pip install`
 
 --
 
@@ -779,8 +783,6 @@ $ workon api_project
 
 Convenient access to virtualenvs by name
 
-Keeps virtualenvs and project directories isolated and organized
-
 Adds pre- and post- hooks for `activate` and `deactivate`
 
 ???
@@ -819,6 +821,8 @@ layout: false
 
 A better `virtualenvwrapper`
 
+--
+
 ```
 $ pew mkproject -p python3 api_pew
 Running virtualenv with interpreter /usr/local/bin/python3
@@ -826,21 +830,35 @@ New python executable in /Users/brian/.virtualenvs/api_pew/bin/python3.6
 # ... virtualenv output ...
 Setting project for api_pew to /Users/brian/Code/api_pew
 Launching subshell in virtual environment. Type 'exit' or 'Ctrl+D' to return.
+```
 
+???
+
+- Behaves similarly to `virtualenvwrapoper`
+- Avoids need for shell-specific hacks
+- Only need to update environment
+
+--
+
+```
 (api_pew)$ exit
+```
 
+???
+
+- No `deactivate`; our shell environment is gone
+
+--
+
+```
 $ pew workon api_pew
 
 (api_pew)$ 
 ```
 ???
 
-- Behaves similarly to `virtualenvwraper`
-
-TODO
-
-- Subshell
-- Uses `virtualenv`
+- Pure Python
+- Still uses `virtualenv`, but there's an open issue about using `venv`
 
 ---
 
@@ -848,30 +866,81 @@ TODO
 
 Install command line tools into separate virtualenvs
 
+--
+
 ```
-$ pipsi install --python python3 http-prompt
-
-$ which http-prompt
-/Users/brian/.local/bin/http-prompt
-
-$ /Users/brian/.local/venvs/http-prompt/bin/python -m pip list
-http-prompt (0.10.2)
-httpie (0.9.9)
-prompt-toolkit (1.0.15)
-requests (2.18.4)
+$ pipsi install --python python3 cookiecutter
+New python executable in /Users/brian/.local/venvs/cookiecutter/bin/python3.6
+  Linked script /Users/brian/.local/bin/cookiecutter
 # ...
-
-$ http-prompt
-Version: 0.10.2
-http://localhost:8000>
 ```
 
 ???
 
-TODO
+- Cookiecutter creates projects from templates
 
-- `venv`?
+--
+
+```
+$ /Users/brian/.local/venvs/cookiecutter/bin/python -m pip list
+arrow (0.10.0)
+click (6.7)
+cookiecutter (1.5.1)
+Jinja2 (2.9.6)
+# ...
+```
+
+--
+
+```
+$ cookiecutter
+Usage: cookiecutter [OPTIONS] TEMPLATE [EXTRA_CONTEXT]...
+```
+
+Check out [cookiecutter](https://github.com/audreyr/cookiecutter)
+
+???
+
+- Uses `virtualenv` to be compatible with many versions of Python
 - Shortcut for manual venv and symlink into `~/bin`
+
+
+---
+
+### A few more
+
+???
+
+- I haven't used these much, but they look cool
+
+--
+
+[Pipenv](http://docs.pipenv.org/en/latest/): "Sacred Marriage of Pipfile, Pip, & Virtualenv"
+
+- "[`Pipfile` will be superior to `requirements.txt`](https://github.com/pypa/pipfile)"
+- Relies on [pew](https://github.com/berdario/pew)
+
+???
+
+- Bleeding edge
+
+--
+
+[pyenv](https://github.com/pyenv/pyenv): "Simple Python version management"
+
+- Install and switch between multiple versions of Python
+- [`pyenv virtualenv 3.6.2 api_pyenv`](https://github.com/pyenv/pyenv-virtualenv)
+
+???
+
+- Deep hooks into shell
+
+--
+
+[tox](https://tox.readthedocs.io/en/latest/): "Automate and standardize testing in Python"
+
+- Creates a virtualenv for multiple versions of Python
+- Installs and tests your project in each
 
 ---
 layout: true
@@ -922,9 +991,11 @@ Prefer `venv` over `virtualenv` for Python 3
 
 TODO
 
-- Don't need venv for scripts that only use standard library
-- `#!/usr/bin/env python3` in scripts
-- Think twice before using `pip` outside of a venv
+Don't need venv for scripts that only use standard library
+
+Start scripts `#!/usr/bin/env python3`
+
+Think twice before using `pip` outside of a venv
 
 Outside of a venv, be explicit about which Python you're using:
 
@@ -953,10 +1024,7 @@ layout: false
 
 TODO
 
-- Move package doc links to slide headers
-- https://github.com/python/cpython/tree/master/Lib/venv
 - https://groups.google.com/forum/#!forum/python-virtualenv
-- Evolution of `virtualenv` to `venv`
 - GitHub issues
 
 ### Using with other dev tools
@@ -974,12 +1042,6 @@ TODO
 ---
 
 ### Alternatives
-
-[Pipenv: Sacred Marriage of Pipfile, Pip, & Virtualenv](http://docs.pipenv.org/en/latest/)
-
-- "[`Pipfile` will be superior to `requirements.txt`](https://github.com/pypa/pipfile)"
-- Relies on [pew](https://github.com/berdario/pew), which only uses `virtualenv`
-- [Default setup adds ugly hash to venv name](https://github.com/kennethreitz/pipenv/pull/238)
 
 [Conda](https://conda.io/docs/index.html)
 
@@ -1010,7 +1072,8 @@ Ubuntu
 
 ???
 
+- Vagrantfile in repo
+
 TODO
 
-- Vagrantfile in repo
-- TL;DR version
+- TL;DR
