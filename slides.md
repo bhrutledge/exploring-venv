@@ -1,6 +1,6 @@
 # Exploring <br> Virtual Environments
 
-## with Brian Rutledge
+## with [Brian Rutledge](https://github.com/bhrutledge)
 
 - [What are they?](#what)
 - [How do I create one?](#create)
@@ -10,12 +10,12 @@
 - [Related tools](#related)
 - [Reference](#reference)
 
+<div class="footer">Type "p" to see notes, or "?" for more help.</div>
+
 ???
 
-Hi there! First, a bit about me. I'm a developer at EnergySage.
+Hi there! First, a bit about me. I'm a developer at [EnergySage](https://www.energysage.com).
 We're a startup in downtown Boston, and use Django to power the world's first and largest online marketplace for solar panel installation.
-Fun fact: I found about the job through the mailing list for this meetup.
-Also, we're likely going to be hiring in the fall, so come say hi if you might be interested.
  
 - Take your time
 - Look ahead
