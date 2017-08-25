@@ -16,3 +16,5 @@ python -m SimpleHTTPServer
 ```
 
 Built with [remark](https://remarkjs.com).
+
+Presented at the [Boston Python Meetup](https://www.meetup.com/bostonpython/events/240446981/) on August 24, 2017.
