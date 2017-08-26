@@ -7,7 +7,7 @@
 - Tips
 - Related tools
 
-View at https://bhrutledge.github.io/exploring-venv/, or locally ala:
+View at <https://bhrutledge.github.io/exploring-venv>, or locally ala:
 
 ```
 git clone https://github.com/bhrutledge/exploring-venv.git
@@ -18,3 +18,4 @@ python -m SimpleHTTPServer
 Built with [remark](https://remarkjs.com).
 
 Presented at the [Boston Python Meetup](https://www.meetup.com/bostonpython/events/240446981/) on August 24, 2017.
+Watch the screencast on [YouTube](https://youtu.be/_6xgJSVKMhY).

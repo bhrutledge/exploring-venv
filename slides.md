@@ -1,6 +1,6 @@
 # Exploring <br> Virtual Environments
 
-## with [Brian Rutledge](https://github.com/bhrutledge)
+## with Brian Rutledge
 
 - [What are they?](#what)
 - [How do I create one?](#create)
@@ -10,7 +10,12 @@
 - [Related tools](#related)
 - [Reference](#reference)
 
-<div class="footer">Type "p" to see notes, or "?" for more help.</div>
+<div class="remark-slide-icons">
+    <a href="https://youtu.be/_6xgJSVKMhY" title="Presentation on YouTube"><i class="fa fa-lg fa-youtube-play"></i></a>
+    <a href="https://github.com/bhrutledge/exploring-venv" title="Slide source on GitHub"><i class="fa fa-lg fa-github"></i></a>
+</div>
+
+<div class="remark-slide-help">Type "p" to see notes, or "?" for more help.</div>
 
 ???
 

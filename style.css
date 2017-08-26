@@ -36,7 +36,15 @@ pre {
     line-height: 1.3;
 }
 
-.footer {
+.remark-slide-icons {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    margin: 0;
+    word-spacing: .5em;
+}
+
+.remark-slide-help {
     position: absolute;
     bottom: 12px;
     left: 20px;
