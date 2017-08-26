@@ -1,4 +1,4 @@
-# Exploring Virtual Environments
+# Exploring Virtual Environments in Python
 
 - What are they?
 - How do I create one?
@@ -15,7 +15,7 @@ cd exploring-venv
 python -m SimpleHTTPServer
 ```
 
-Built with [remark](https://remarkjs.com).
-
 Presented at the [Boston Python Meetup](https://www.meetup.com/bostonpython/events/240446981/) on August 24, 2017.
 Watch the screencast on [YouTube](https://youtu.be/_6xgJSVKMhY).
+
+Built with [remark](https://remarkjs.com).
